@@ -1,0 +1,60 @@
+{
+  "scout": {
+    "model": "haiku",
+    "tools": ["Read", "Glob", "Grep"],
+    "max_turns": 12,
+    "budget_s": 300,
+    "max_budget_usd": 0.5
+  },
+  "coder": {
+    "model": "haiku",
+    "tools": ["Read", "Edit", "Write", "Glob", "Grep", "Bash"],
+    "max_turns": 60,
+    "budget_s": 900,
+    "max_budget_usd": 2.0
+  },
+  "judge": {
+    "model": "haiku",
+    "tools": [],
+    "max_turns": 4,
+    "budget_s": 300,
+    "max_budget_usd": 0.2,
+    "accept": 0.8,
+    "reject": 0.2
+  },
+  "deny": [
+    "Read(**/.env)",
+    "Read(**/.env.*)",
+    "Read(~/.ssh/**)",
+    "Read(~/.aws/**)",
+    "Read(~/.gnupg/**)",
+    "Read(~/.netrc)",
+    "Read(~/.config/gh/**)",
+    "Bash(cat *.env*)",
+    "Bash(env *)",
+    "Bash(printenv *)",
+    "Bash(sudo *)",
+    "Bash(curl *)",
+    "Bash(wget *)",
+    "Bash(ssh *)",
+    "Bash(scp *)",
+    "Bash(nc *)",
+    "Bash(git commit *)",
+    "Bash(git push *)",
+    "Bash(git stash *)",
+    "Bash(git checkout *)",
+    "Bash(git switch *)",
+    "Bash(git reset *)",
+    "Bash(git merge *)",
+    "Bash(git rebase *)",
+    "Bash(rm -rf *)"
+  ],
+  "env_allow": [],
+  "limits": {
+    "attempts": 3,
+    "check_timeout_s": 600,
+    "packet_lines": 200,
+    "close_diff_chars": 30000
+  },
+  "chrome": null
+}
