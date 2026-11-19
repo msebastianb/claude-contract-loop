@@ -40,7 +40,7 @@ It runs on your Claude login alone: no API keys and no second model provider.
 ## How a run goes
 
 1. **`init`** checks the CLI and the login, refuses a dirty tree, cuts branch `ccl/<stamp>`, and creates the state directory outside the repo.
-2. **`scout`** has Haiku read the repo and write a one-page brief. The scout is read-only.
+2. **`scout`** has Haiku 5.5 read the repo and write a one-page brief. The scout is read-only.
 3. **Contract.** You write `contract.json` from the example: the stack decision with a reason, the tasks, the `allowed` globs, the `protected` checks, and the real `launch` command.
 4. **`seal`** validates the contract and commits the checks.
 5. **`run`** implements the tasks in order. After each attempt, out-of-scope and protected changes are reverted, the checks run, and the scope gate judges the diff. A passing task becomes a `ccl(<task>)` commit. A task that fails the same way twice, stays red after three attempts, or gets rejected by the scope gate goes to escalation (exit 3).
@@ -73,7 +73,7 @@ ccl --repo <repo> close
 | Command | Does |
 |---|---|
 | `init [--force]` | CLI and login check, clean-tree check, branch `ccl/<stamp>`, state dir outside the repo |
-| `scout --goal "..."` | Haiku writes `brief.md` (asked to keep it to 60 lines), read-only |
+| `scout --goal "..."` | Haiku 5.5 writes `brief.md` (asked to keep it to 60 lines), read-only |
 | `seal` | Validates `contract.json`, commits the acceptance checks |
 | `run [--no-judge]` | Implements tasks in order. Exit 3 = escalation packet waiting |
 | `resolve <task>` | Accepts your own fix for an escalated task (checks must pass) |
@@ -102,7 +102,7 @@ Not enforced:
 
 ## Configuration
 
-`skills/claude-contract-loop/roles.json` holds the models, tool lists, deny rules, the environment allowlist and the limits. Override it per machine with `~/.config/claude-contract-loop/roles.json` or the `CLAUDE_CONTRACT_LOOP_ROLES` variable. Models are any alias the `claude` CLI accepts (`haiku`, `sonnet`, `opus`) or a full model name. `effort` is passed as `--effort` (`low`, `medium`, `high`, `xhigh` or `max`); remove it to use the CLI's default. Change a model there, not in the prompts.
+`skills/claude-contract-loop/roles.json` holds the models, tool lists, deny rules, the environment allowlist and the limits. Override it per machine with `~/.config/claude-contract-loop/roles.json` or the `CLAUDE_CONTRACT_LOOP_ROLES` variable. Models are any alias the `claude` CLI accepts (`haiku`, `sonnet`, `opus`) or a full model name. `effort` is passed as `--effort` (`low`, `medium`, `high`, `xhigh` or `max`); remove it to use the CLI's default. Change a model there, not in the prompts. Max effort uses more tokens per call. Each role's `max_budget_usd` caps what one call may spend, and a judge that hits its cap leaves its gate unjudged. Raise the cap in `roles.json` when `close.md` shows that.
 
 The override merges one level down (for example `coder.model`), but a list replaces the default list. If you set `deny`, copy the rules you want to keep.
 
@@ -139,6 +139,7 @@ Everything lives outside the repo, so a failed run never pollutes your worktree:
 ## Requirements
 
 - Claude Code CLI, logged in: `npm install -g @anthropic-ai/claude-code`, then `claude auth login`. Written against Claude Code 2.1.328.
+- Access to `claude-haiku-5-5` on that login. If your account cannot use it, change `model` in `roles.json`.
 - Python 3.9+ and git. `ccl.py` uses the standard library only.
 - Optional, for the visual gate: Chrome or Chromium, used headless for screenshots.
 
