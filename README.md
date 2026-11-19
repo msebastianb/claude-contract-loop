@@ -20,7 +20,12 @@ Asking a cheap model to "build the feature" fails in a predictable way. It wande
 
 The loop splits the work by what each side does well. Claude Code writes the contract: the stack decision, small tasks, the files each task may touch, and the acceptance checks that prove each task done. A script then runs the loop with `claude -p` on Haiku. Executable checks decide "done", a judge gates what checks cannot see, and every run ends in a verdict.
 
-This is a port of [hermes-contract-loop](https://github.com/msebastianb/hermes-contract-loop) for the Claude Code CLI. Where the hermes version calls OpenRouter, this one uses only your Claude login.
+It runs on your Claude login alone: no API keys and no second model provider.
+
+## When to use
+
+- A coding task that splits into two or more small tasks, each with a command that proves it done.
+- Not for one-line fixes, pure exploration, or work that no command can check.
 
 ## Roles
 
@@ -154,17 +159,17 @@ python3 -m unittest discover -s tests -v
 - **Spend cap per call.** Each role has `max_budget_usd`, passed as `--max-budget-usd`.
 - **State outside the repo.** `init` refuses a dirty tree, because an acceptance check written beforehand would count as dirt.
 - **Globs use `fnmatch`**, where `*` also crosses `/`. Write `tests/**` for a whole tree.
-- **Separate runtime names.** Paths and variables carry `claude-contract-loop` and `CLAUDE_CONTRACT_LOOP_*`, so this tool and the hermes one (`contract-loop`) can live side by side.
+- **Own runtime names.** Paths and variables carry `claude-contract-loop` and `CLAUDE_CONTRACT_LOOP_*`, so the state of this tool never mixes with another install.
 - **Private code** goes to Anthropic through your Claude Code login.
 
-## Differences from hermes-contract-loop
+## Notes on Claude Code
 
-- The models run through `claude -p` (Haiku by default), not through `hermes chat`.
+- The models run through `claude -p` (Haiku by default). Any alias the CLI accepts works in `roles.json`.
 - No API keys in this tool. The scout, coder and judge all use the Claude login.
 - No mockup generation, because Claude does not generate images. Put your own PNG in a task's `reference`. The coder reads it, and the visual gate compares the screenshot against it.
 - The judge is a Claude model that returns self-reported probabilities. That is less calibrated than a dedicated typed judge, so the thresholds in `roles.json` are starting values.
 - Spend is recorded per role from the cost Claude Code reports. On a subscription that is an API-equivalent figure.
-- Isolation comes from `--safe-mode`, where the hermes version uses `--ignore-rules`.
+- Isolation comes from `--safe-mode`, so the models never load your CLAUDE.md, skills or hooks.
 
 ## License
 MIT. See [LICENSE](LICENSE).
