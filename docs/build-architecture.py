@@ -74,7 +74,7 @@ def text(x, y, s, size: float = 12, color=MUTED, anchor="start", weight=None):
 
 # ---------- document ----------
 add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
-    f'aria-label="The Claude contract loop: Claude Code writes the contract and the acceptance checks, '
+    f'aria-label="The Claude contract loop: the strongest session model writes the contract and the acceptance checks, '
     f'ccl.py drives a Haiku coder through them, a typed judge gates what the checks cannot see, and '
     f'ccl.py close reports a verdict">')
 add('<defs>')
@@ -88,11 +88,11 @@ add(f'<rect width="{W}" height="{H}" fill="url(#grid)"/>')
 add(f'<rect x="0" y="0" width="{W}" height="3" fill="#a78bfa" opacity="0.75"/>')
 
 text(48, 44, "contract-first coding loop · Claude Code", 20, INK, weight="600")
-text(48, 66, "Claude writes the contract; a script drives a cheap Haiku coder through it.", 12, FAINT)
+text(48, 66, "The strongest model in your session writes the contract; a script drives a cheap Haiku coder through it.", 12, FAINT)
 
 # 1 - architect and contract
-box(48, 100, 330, 104, "violet", "ARCHITECT: Claude Code session", [
-    "a strong model, used where it pays",
+box(48, 100, 330, 104, "violet", "ARCHITECT: strongest session model", [
+    "the strongest model you have selected",
     "writes the checks and the contract,",
     "settles escalations, gives the verdict",
 ], title_size=15)
@@ -112,7 +112,7 @@ add('<rect x="48" y="250" width="904" height="336" rx="14" fill="rgba(2,6,23,0.5
 text(68, 276, "THE LOOP: ccl.py run", 13.5, INK, weight="600")
 
 box(72, 316, 250, 104, "emerald", "CODER", [
-    "claude -p, Haiku", "no memory, no CLAUDE.md", "sees only its task spec",
+    "claude -p, Haiku 5.5", "max effort, no CLAUDE.md", "sees only its task spec",
 ], title_size=15)
 box(362, 316, 250, 104, "slate", "WORKING TREE", [
     "revert guard per attempt:", "protected and out-of-scope", "files are thrown away",

@@ -5,7 +5,7 @@ description: Use when building code with a cheap Claude model under a contract. 
 
 # Contract loop (Claude Code)
 
-You are the architect. You write the contract and judge the result; a script runs the loop.
+You are the architect: the strongest model selected in this chat. You write the contract and judge the result; a script runs the loop.
 Haiku scouts, codes and judges through `claude -p`. Your checks decide "done". The script calls
 you back only with a short escalation packet when something needs judgment.
 
@@ -56,7 +56,7 @@ Use the full path every time (shell variables do not survive between tool calls)
 
 ## Running it well
 - Tokens are the cost. Batch `init`, contract writing and `seal` into few calls; read only what each step asks for.
-- Haiku is the default for scout, coder and judge (`roles.json`). Change a model there, not in the prompts, and say why in one line.
+- Haiku 5.5 (`claude-haiku-5-5`) at max effort is the default for scout, coder and judge (`roles.json`). Change a model or effort there, not in the prompts, and say why in one line.
 - Deny rules are guardrails, not a sandbox. A shell command can still reach what the rules do not name. For an untrusted repo, run the loop in a container.
 
 ## Pitfalls

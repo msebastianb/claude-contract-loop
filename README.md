@@ -10,7 +10,7 @@
 
 ---
 
-![The Claude contract loop: Claude Code writes the contract and the acceptance checks; ccl.py drives a Haiku coder through them, a typed judge gates what the checks cannot see, and every run ends in a verdict](docs/architecture.svg)
+![The Claude contract loop: the strongest model in your session writes the contract and the acceptance checks; ccl.py drives a Haiku coder through them, a typed judge gates what the checks cannot see, and every run ends in a verdict](docs/architecture.svg)
 
 ---
 
@@ -18,7 +18,7 @@
 
 Asking a cheap model to "build the feature" fails in a predictable way. It wanders outside the files it should touch, it declares victory without proof, and you spend more reading its output than you saved. Asking the strong model to do everything works, but the bill is high.
 
-The loop splits the work by what each side does well. Claude Code writes the contract: the stack decision, small tasks, the files each task may touch, and the acceptance checks that prove each task done. A script then runs the loop with `claude -p` on Haiku. Executable checks decide "done", a judge gates what checks cannot see, and every run ends in a verdict.
+The loop splits the work by what each side does well. The architect, the strongest model you have selected in the current session, writes the contract: the stack decision, small tasks, the files each task may touch, and the acceptance checks that prove each task done. A script then runs the loop with `claude -p` on Haiku 5.5 at max effort. Executable checks decide "done", a judge gates what checks cannot see, and every run ends in a verdict.
 
 It runs on your Claude login alone: no API keys and no second model provider.
 
@@ -31,10 +31,10 @@ It runs on your Claude login alone: no API keys and no second model provider.
 
 | Role | Default | Job | Tools |
 |---|---|---|---|
-| Architect | your Claude Code session, on a strong model | writes the contract and the checks, settles escalations, gives the verdict | n/a |
-| Scout | `claude -p --model haiku` | reads the repo, writes `brief.md` (asked to keep it to 60 lines) | Read, Glob, Grep |
-| Coder | `claude -p --model haiku` | implements one task at a time; sees only its spec | Read, Edit, Write, Glob, Grep, Bash |
-| Judge | `claude -p --model haiku` | typed gates: scope, repeated failure, screenshot, risk per file | none (the visual gate adds Read) |
+| Architect | the strongest model selected in your current session (`/model`) | writes the contract and the checks, settles escalations, gives the verdict | n/a |
+| Scout | `claude -p --model claude-haiku-5-5 --effort max` | reads the repo, writes `brief.md` (asked to keep it to 60 lines) | Read, Glob, Grep |
+| Coder | `claude -p --model claude-haiku-5-5 --effort max` | implements one task at a time; sees only its spec | Read, Edit, Write, Glob, Grep, Bash |
+| Judge | `claude -p --model claude-haiku-5-5 --effort max` | typed gates: scope, repeated failure, screenshot, risk per file | none (the visual gate adds Read) |
 | Checks | your commands | the only source of truth for "done" | n/a |
 
 ## How a run goes
@@ -102,7 +102,7 @@ Not enforced:
 
 ## Configuration
 
-`skills/claude-contract-loop/roles.json` holds the models, tool lists, deny rules, the environment allowlist and the limits. Override it per machine with `~/.config/claude-contract-loop/roles.json` or the `CLAUDE_CONTRACT_LOOP_ROLES` variable. Models are any alias the `claude` CLI accepts (`haiku`, `sonnet`, `opus`) or a full model name. Change a model there, not in the prompts.
+`skills/claude-contract-loop/roles.json` holds the models, tool lists, deny rules, the environment allowlist and the limits. Override it per machine with `~/.config/claude-contract-loop/roles.json` or the `CLAUDE_CONTRACT_LOOP_ROLES` variable. Models are any alias the `claude` CLI accepts (`haiku`, `sonnet`, `opus`) or a full model name. `effort` is passed as `--effort` (`low`, `medium`, `high`, `xhigh` or `max`); remove it to use the CLI's default. Change a model there, not in the prompts.
 
 The override merges one level down (for example `coder.model`), but a list replaces the default list. If you set `deny`, copy the rules you want to keep.
 
@@ -164,12 +164,17 @@ python3 -m unittest discover -s tests -v
 
 ## Notes on Claude Code
 
-- The models run through `claude -p` (Haiku by default). Any alias the CLI accepts works in `roles.json`.
+- The models run through `claude -p` on Haiku 5.5 (`claude-haiku-5-5`) at max effort. Any model the CLI accepts works in `roles.json`.
 - No API keys in this tool. The scout, coder and judge all use the Claude login.
 - No mockup generation, because Claude does not generate images. Put your own PNG in a task's `reference`. The coder reads it, and the visual gate compares the screenshot against it.
 - The judge is a Claude model that returns self-reported probabilities. That is less calibrated than a dedicated typed judge, so the thresholds in `roles.json` are starting values.
 - Spend is recorded per role from the cost Claude Code reports. On a subscription that is an API-equivalent figure.
 - Isolation comes from `--safe-mode`, so the models never load your CLAUDE.md, skills or hooks.
+
+## What has been run
+
+- The flags were checked against Claude Code 2.1.328. The CLI parser accepts `--model claude-haiku-5-5` and `--effort max` together with the rest of the call.
+- This machine's Claude Code is not logged in, so no model call has run yet. The loop has not been tested against a live model.
 
 ## License
 MIT. See [LICENSE](LICENSE).
