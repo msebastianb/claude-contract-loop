@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """claude-contract-loop driver.
 
-The architect (a Claude Code session on a strong model) writes a contract: small
+The architect (the strongest model selected in the current session) writes a contract: small
 tasks, each with the files it may touch and the commands that prove it done. This
 script then runs the loop without it: a cheap Claude model, called through
 `claude -p`, implements each task, the checks decide, a judge model gates what
@@ -333,6 +333,8 @@ def claude(roles: dict, name: str, prompt: str, repo: Path, logp: Path, *, tools
         "--setting-sources", "project,local",  # no user-level hooks or permission rules
         "--no-session-persistence",            # no transcript on disk with what the model read
     ]
+    if role.get("effort"):
+        cmd += ["--effort", str(role["effort"])]
     if tools:
         cmd += ["--allowedTools", ",".join(tools)]
     cmd += ["--disallowedTools"] + list(roles.get("deny", []))

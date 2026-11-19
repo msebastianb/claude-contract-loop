@@ -1,20 +1,23 @@
 {
   "scout": {
-    "model": "haiku",
+    "model": "claude-haiku-5-5",
+    "effort": "max",
     "tools": ["Read", "Glob", "Grep"],
     "max_turns": 12,
     "budget_s": 300,
     "max_budget_usd": 0.5
   },
   "coder": {
-    "model": "haiku",
+    "model": "claude-haiku-5-5",
+    "effort": "max",
     "tools": ["Read", "Edit", "Write", "Glob", "Grep", "Bash"],
     "max_turns": 60,
     "budget_s": 900,
     "max_budget_usd": 2.0
   },
   "judge": {
-    "model": "haiku",
+    "model": "claude-haiku-5-5",
+    "effort": "max",
     "tools": [],
     "max_turns": 4,
     "budget_s": 300,

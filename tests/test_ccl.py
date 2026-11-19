@@ -168,7 +168,8 @@ class Loop(Base):
         self.assertEqual(opt(coder, "--tools"), "Read,Edit,Write,Glob,Grep,Bash")
         self.assertEqual(opt(coder, "--allowedTools"), "Read,Edit,Write,Glob,Grep,Bash")
         self.assertEqual(opt(coder, "--permission-mode"), "dontAsk")
-        self.assertEqual(opt(coder, "--model"), "haiku")
+        self.assertEqual(opt(coder, "--model"), "claude-haiku-5-5")
+        self.assertEqual(opt(coder, "--effort"), "max")
         for flag in ("--strict-mcp-config", "--no-session-persistence", "--disable-slash-commands", "--safe-mode"):
             self.assertIn(flag, coder)
         self.assertEqual(opt(coder, "--setting-sources"), "project,local")
